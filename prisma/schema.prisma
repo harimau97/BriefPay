@@ -1,0 +1,116 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  CLIENT
+  FREELANCER
+}
+
+enum JobStatus {
+  DRAFT
+  FUNDED
+  IN_PROGRESS
+  SUBMITTED
+  VERIFYING
+  PASSED
+  FAILED
+  PAID
+  CANCELED
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String
+  role         UserRole
+  jobsPosted   Job[]    @relation("ClientJobs")
+  jobsAccepted Job[]    @relation("FreelancerJobs")
+}
+
+model Job {
+  id                     String       @id @default(cuid())
+  title                  String
+  brief                  String
+  budgetCents            Int
+  currency               String       @default("USD")
+  dueAt                  DateTime
+  status                 JobStatus    @default(DRAFT)
+  clientId               String
+  client                 User         @relation("ClientJobs", fields: [clientId], references: [id])
+  freelancerId           String?
+  freelancer             User?        @relation("FreelancerJobs", fields: [freelancerId], references: [id])
+  paypalOrderId          String?
+  paypalAuthorizationId  String?
+  paypalCaptureId        String?
+  paypalInvoiceId        String?
+  criteria               Criterion[]
+  submissions            Submission[]
+  events                 JobEvent[]
+  createdAt              DateTime     @default(now())
+  updatedAt              DateTime     @updatedAt
+}
+
+model Criterion {
+  id        String            @id @default(cuid())
+  jobId     String
+  job       Job               @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  label     String
+  sortOrder Int
+  results   CriterionResult[]
+
+  @@index([jobId])
+}
+
+model Submission {
+  id           String        @id @default(cuid())
+  jobId        String
+  job          Job           @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  deliveryUrl  String
+  notes        String        @default("")
+  createdAt    DateTime      @default(now())
+  verification Verification?
+
+  @@index([jobId])
+}
+
+model Verification {
+  id            String             @id @default(cuid())
+  submissionId  String             @unique
+  submission    Submission         @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+  status        String
+  summary       String
+  rawAgentTrace String
+  results       CriterionResult[]
+  createdAt     DateTime           @default(now())
+}
+
+model CriterionResult {
+  id             String       @id @default(cuid())
+  verificationId String
+  verification   Verification @relation(fields: [verificationId], references: [id], onDelete: Cascade)
+  criterionId    String
+  criterion      Criterion    @relation(fields: [criterionId], references: [id])
+  verdict        String
+  evidence       String
+  confidence     Float
+
+  @@index([verificationId])
+  @@index([criterionId])
+}
+
+model JobEvent {
+  id      String   @id @default(cuid())
+  jobId   String
+  job     Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  type    String
+  at      DateTime @default(now())
+  payload String   @default("{}")
+
+  @@index([jobId])
+}

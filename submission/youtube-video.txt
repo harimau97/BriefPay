@@ -1,0 +1,58 @@
+BriefPay — YouTube demo
+Paste the title and description into YouTube. Do not paste this header.
+There is no required title, description, tag, or thumbnail wording.
+
+Deadline: 13 Nov 2026, 05:00 Korea time. That is 12 Nov 2026, 12:00 PM Pacific.
+Leave the Devpost video field empty until the upload is done, then paste the YouTube link.
+
+================================================================================
+RULES
+================================================================================
+
+- Under 3 minutes. Judges do not have to watch past 3:00.
+- YouTube. Public or unlisted. No password. The link must open while logged out.
+- English, or Korean speech with English subtitles.
+- Show the app working. The video should say what problem this solves, who it is for, and why it matters.
+- No copyrighted music, clips, or other material you do not have rights to use.
+
+================================================================================
+TITLE
+================================================================================
+
+BriefPay: PayPal hold captured only after the brief passes
+
+================================================================================
+DESCRIPTION
+================================================================================
+
+BriefPay places a freelance budget on a PayPal sandbox authorization hold. Claude Haiku checks the delivery URL against the brief. The server captures the hold only after every criterion passes. A failed review leaves the hold in place. This is not licensed escrow.
+
+Live demo: https://meganesoftware.cc/briefpay/
+
+================================================================================
+RECORDING
+Win+Alt+R starts and stops the Windows recording. The file usually lands in Videos.
+Open https://meganesoftware.cc/briefpay/
+On the home page, open only the Landing page redesign whose badge is Draft and whose amount is USD 200.00.
+Do not open the Captured or Voided jobs with the same title.
+Use the United States Personal sandbox account in the sandbox.paypal.com window.
+Do not use a live PayPal account or a Korean PayPal account.
+================================================================================
+
+1. Press Start as client. There is no password.
+2. Open the Draft job. Press the yellow PayPal button and approve the $200 authorization.
+3. Show the Authorized badge. Capture ID stays none. This is a hold, not a payout.
+4. Switch the header to Freelancer. Press Accept job. The badge becomes In progress.
+5. Press Fail example, then Submit delivery.
+   The URL is https://meganesoftware.cc/briefpay/demo/fail
+6. Press Run AI review. While the button says Verifying, do not refresh.
+   The log names claude-haiku-5-5. This can take more than ten seconds.
+7. Show the Revision badge, the failed rows, and their evidence.
+   Capture ID is still none. Do not press Cancel job or Force payout.
+8. Press Pass example, then Submit delivery.
+   The URL is https://meganesoftware.cc/briefpay/demo/pass
+9. Press Run AI review again. When every criterion passes, the server captures on that same click.
+10. Show the Captured badge, the Capture ID, and the timeline. Stop.
+
+If the red line under the PayPal button says PayPal returned a currency other than USD, stop and do not keep that take.
+No receipt invoice yet still counts as a successful capture.

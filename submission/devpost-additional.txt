@@ -1,0 +1,194 @@
+BriefPay — Devpost additional info
+For judges and organizers. Do not paste this header into the form.
+Fields already filled on the form are repeated here so the page stays consistent.
+
+Still required from you, before you submit:
+- The sandbox Personal buyer email and password, in the testing box below. Sandbox buyers from another developer account cannot pay this merchant.
+- The three eligibility checkboxes, if each statement is true. The age of majority in Korea is 19.
+- The experience score, if you want a number other than 7.
+
+================================================================================
+UPLOAD A FILE
+Optional. Leave it empty. Do not upload .env or a zip that contains secrets.
+================================================================================
+
+No file.
+
+================================================================================
+SUBMITTER TYPE
+================================================================================
+
+Individual
+
+================================================================================
+SUBMITTER COUNTRY OF RESIDENCE
+================================================================================
+
+Korea, Republic of
+
+================================================================================
+CANADA PROVINCE
+================================================================================
+
+N/A
+
+================================================================================
+ORGANIZATION NAME
+================================================================================
+
+N/A
+
+================================================================================
+IS YOUR PROJECT NEW, OR DID IT EXIST BEFORE OCT 1, 2026 (9:15 AM PT)?
+================================================================================
+
+New
+
+================================================================================
+IF IT EXISTED BEFORE
+================================================================================
+
+N/A
+
+================================================================================
+EXPLAIN HOW YOUR PROJECT MEETS THE MAIN TECHNOLOGY REQUIREMENT
+Name each PayPal tool and each AI tool, and what it does.
+================================================================================
+
+PayPal developer platform, sandbox only. The app refuses PAYPAL_ENVIRONMENT=LIVE.
+
+- PayPal JavaScript SDK. The checkout button is created with intent=authorize and currency USD. Buyer approval records an authorization hold. It does not capture.
+- Orders v2. The server creates an order with intent AUTHORIZE, then calls authorize after the buyer approves.
+- Payments v2. After every acceptance criterion passes, server code captures that authorization with a stable PayPal-Request-Id. Cancel voids the authorization. A job that was already captured is refunded instead.
+- Invoicing v2. After capture, the server can record an invoice as a receipt for money already captured. The invoice does not request another payment.
+- PayPal Agent Toolkit (@paypal/agent-toolkit), sandbox only. A separate step may draft an invoice with invoice create, get, and list. The server checks that the draft amount matches the job budget before send and record-payment. The review model does not receive these tools.
+
+AI:
+
+- Vercel AI SDK and Anthropic. The review model is Claude Haiku 5.5, model id claude-haiku-5-5, through ANTHROPIC_API_KEY.
+- The model opens the freelancer's delivery URL and returns a pass or fail for each acceptance criterion, with evidence. It cannot call PayPal. Capture, void, and refund stay in server code and run only from the job state.
+- If the model response is not a structured verdict, the server scores the same page observation itself. Capture still runs only after a pass.
+- Without KERNEL_API_KEY, review reads the page HTML directly. It does not measure the page in a 390px browser.
+
+================================================================================
+WHICH ADDITIONAL SPONSOR TOOLS DID YOU USE?
+Select Bryntum only. Do not select Kernel. The Kernel package is optional and this demo has no Kernel key.
+================================================================================
+
+Bryntum
+
+Bryntum Scheduler shows the job timeline from Created through Authorization hold, review, and Captured or Hold released. The app uses the public @bryntum/scheduler-trial package.
+
+================================================================================
+PUBLIC CODE REPOSITORY
+Do not invent a URL. Replace this after you publish the repo.
+================================================================================
+
+https://github.com/harimau97/BriefPay
+
+The repository is public and includes the MIT license, a README with setup instructions, and an explanation of the PayPal and AI use above. Bryntum is the only sponsor tool.
+
+================================================================================
+WORKING DEMO
+================================================================================
+
+https://meganesoftware.cc/briefpay/
+
+================================================================================
+TESTING INSTRUCTIONS OR CREDENTIALS
+Paste your sandbox Personal buyer email and password over the two blank lines. Do not put live PayPal credentials here.
+================================================================================
+
+No password is required for the BriefPay demo roles.
+
+1. Open https://meganesoftware.cc/briefpay/
+2. Press Start as client. The header can switch between Client and Freelancer.
+   Demo client: client@demo.com
+   Demo freelancer: freelancer@demo.com
+3. Open a job whose badge is Draft, or press New job and keep the defaults. The defaults are "Landing page redesign", USD 150, and four acceptance criteria. Do not open a job that is already Captured or Voided.
+4. Press the PayPal button. In the sandbox.paypal.com window, sign in with this sandbox Personal buyer and approve the authorization:
+
+   Sandbox buyer email:
+   Sandbox buyer password:
+
+   Approval places a hold. The badge becomes Authorized and the capture ID stays empty.
+5. Switch to Freelancer, press Accept job, press Fail example, then Submit delivery.
+   Fail URL: https://meganesoftware.cc/briefpay/demo/fail
+6. Press Run AI review. The log names claude-haiku-5-5. The badge becomes Revision. Capture is not called, and the capture ID stays empty.
+7. Press Pass example, submit again, and press Run AI review.
+   Pass URL: https://meganesoftware.cc/briefpay/demo/pass
+8. Every criterion should pass. Server code then captures the authorization. The badge becomes Captured and a capture ID appears.
+9. The timeline lists Created, Authorization hold, Accepted, Delivery submitted, Verification started, Verification passed, and Captured.
+
+This is a PayPal sandbox authorization hold, then capture. It is not licensed escrow. The receipt invoice, if present, is not a second charge. A missing receipt invoice does not undo a completed capture.
+
+Do not press Cancel job or Force payout during the fail step. Cancel releases the hold. Force payout captures the full amount after a failed review.
+
+================================================================================
+HOW WOULD YOU RATE YOUR OVERALL EXPERIENCE INTEGRATING PAYPAL?
+Suggested score. Change it if you disagree.
+================================================================================
+
+7
+
+================================================================================
+OVERALL EXPERIENCE RATING: WHY
+================================================================================
+
+The sandbox Orders v2 authorize flow and the Payments v2 authorization capture did what the product needed: buyer approval places a hold, and a separate server call captures it only after review. The JavaScript SDK button with intent=authorize was clear.
+
+Two parts cost time. A Korean sandbox buyer paying a Korean sandbox merchant is treated as a domestic payment and is declined, so the buyer account had to be a United States Personal sandbox account. The authorize response also omitted the amount unless Prefer: return=representation was set, and reusing one PayPal-Request-Id replayed that incomplete response. After those two fixes, create, authorize, and capture completed in the sandbox.
+
+The Agent Toolkit invoice draft is a separate receipt step. Capture does not depend on it.
+
+================================================================================
+ARE YOU OPEN TO US CONTACTING YOU FOR ADDITIONAL FEEDBACK?
+Suggested answer. Change it if you do not want to be contacted.
+================================================================================
+
+Yes
+
+================================================================================
+IF YOU USED THE APIMATIC CONTEXT PLUGIN
+================================================================================
+
+N/A. I did not use the APIMatic Context Plugin.
+
+================================================================================
+IF YOU USED AG GRID
+================================================================================
+
+N/A. I did not use AG Grid.
+
+================================================================================
+ELIGIBILITY CHECKBOXES
+Tick these yourself. Tick them only if each sentence is true for you.
+================================================================================
+
+- I am at least the age of majority where I reside.
+- I am from an eligible jurisdiction to compete.
+- I am not an employee, representative, or agent of the Promotion Entities of this hackathon.
+
+================================================================================
+WHICH AI TOOLS HAVE YOU LEVERAGED WHILE WORKING ON THIS PROJECT?
+================================================================================
+
+In the product: Anthropic Claude Haiku 5.5 (claude-haiku-5-5) through the Vercel AI SDK. It reviews the delivery URL. It does not call PayPal.
+
+While building: Claude and Grok, as coding assistants.
+
+================================================================================
+DESCRIBE THE LEVEL OF LEARNING YOU DERIVED FROM THE PROJECT
+Pick the menu item closest to this sentence.
+================================================================================
+
+I learned a lot.
+
+The useful part was keeping PayPal capture, void, and refund in server code, and letting the model return only a structured pass or fail.
+
+================================================================================
+DID YOU GAIN AI VALUE THAT YOU CAN USE IN YOUR CAREER?
+Suggested answer.
+================================================================================
+
+Yes

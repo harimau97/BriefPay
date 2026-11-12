@@ -1,0 +1,143 @@
+BriefPay — Devpost answers
+Paste each section into the matching field. Do not paste this header into the form.
+
+================================================================================
+PROJECT NAME
+================================================================================
+
+BriefPay
+
+================================================================================
+ELEVATOR PITCH
+140 characters maximum. This line is 109 characters.
+================================================================================
+
+A PayPal authorization hold is captured only after an AI agent checks the freelancer's URL against the brief.
+
+================================================================================
+ABOUT THE PROJECT
+Paste the markdown below into Project story.
+================================================================================
+
+## Inspiration
+
+Freelance payment usually moves when someone presses a complete button. That button does not show whether the delivered page matches the brief. I wanted the fee to sit on a PayPal authorization hold, and to be captured only after an agent had opened the delivery and checked it against the acceptance criteria.
+
+## What it does
+
+BriefPay is a client and freelancer job flow for a fixed USD budget.
+
+The client writes a brief and up to eight acceptance criteria, then places the budget on a PayPal order with intent AUTHORIZE. Checkout approval records the authorization. It does not capture. The freelancer accepts the job and submits a public URL. Claude Haiku opens that page and returns a pass or fail for each criterion, with evidence. If every criterion passes, server code captures the authorization and can record a PayPal invoice as a receipt for money already captured. If any criterion fails, capture is not called, the hold stays, and the freelancer can submit again. The client can void the hold, or force a full capture after a failed review. Partial payouts are not implemented.
+
+An authorization hold usually has to be captured or released within about 29 days. This is not licensed escrow.
+
+The seeded job is Landing page redesign, USD 150, with four criteria. `/demo/pass` satisfies them. `/demo/fail` has one plan, no call to action, and no contact form. A Bryntum Scheduler timeline shows the job from Created through Authorization hold, review, and Captured or Hold released.
+
+Demo roles have no password. On the hosted app, use Start as client or Start as freelancer. The accounts are client@demo.com and freelancer@demo.com.
+
+## How we built it
+
+The app is Next.js, React, and TypeScript, with Prisma and SQLite. PayPal Orders v2 creates the authorization. After a structured pass, the server calls the authorization capture endpoint with a stable PayPal-Request-Id. Cancel voids the authorization. A job that was already captured is refunded instead. Webhooks can confirm approval, authorization, void, and capture. The approval webhook authorizes the order. It does not capture.
+
+Review uses Claude Haiku 5.5, model id `claude-haiku-5-5`, through the Vercel AI SDK and `ANTHROPIC_API_KEY`. The model can browse the submitted URL. It cannot call PayPal. With `KERNEL_API_KEY`, Kernel measures the call to action at 390px. Without it, review reads the page HTML directly. If the model response is not a structured verdict, the server scores the same observation itself: hero and call to action, plan count, a mobile-width call to action, and a contact form. Capture still runs only after a pass.
+
+A separate receipt step can use the PayPal Agent Toolkit, sandbox only, and only invoice create, get, and list. The server checks that the draft amount matches the job budget before send and record-payment. The verification agent does not receive those tools. The app refuses `PAYPAL_ENVIRONMENT=LIVE`.
+
+## Challenges we ran into
+
+The easy mistake was to capture on buyer approval. The order had to stay an authorization until review finished, including when a webhook arrived for CHECKOUT.ORDER.APPROVED.
+
+The receipt was a second trap. An invoice that asks for payment again would charge the client twice. The invoice note says the capture already happened, and the server records that payment against the invoice.
+
+A model with PayPal tools could talk itself into paying. Capture, void, and refund stay in server code and run only from the job state. Claude Haiku only returns a structured verdict.
+
+A mobile criterion needs a viewport. Static HTML can see a hidden attribute, but it cannot measure a box at 390px. Kernel does that measurement. The HTML fallback says it is a static check.
+
+The pass and fail sample pages have to stay honest. The criteria name a hero, three plans, a mobile call to action, and a contact form, and the sample pages expose those as real content rather than a hidden flag the reviewer can ignore.
+
+## Accomplishments that we're proud of
+
+A pass on /demo/pass captures the full budget. A fail on /demo/fail leaves the hold and records evidence for each missed criterion. The timeline shows that sequence without treating a complete button as payment.
+
+## What we learned
+
+The useful split is between a verdict and a payment. The agent can be wrong, slow, or absent. The server still has one rule: capture the authorization only after a pass, and never let the review step move the money itself.
+
+## What's next for BriefPay
+
+Partial payouts, a real revision thread, and a hosted sandbox where judges can approve a PayPal buyer account without a local setup step. The current release keeps the amount whole: capture all of it, or leave the hold.
+
+================================================================================
+BUILT WITH
+Add these one at a time. Skip any name Devpost does not list. 12 tags.
+================================================================================
+
+Next.js
+React
+TypeScript
+Node.js
+Tailwind CSS
+Prisma
+SQLite
+PayPal API
+Vercel AI SDK
+Anthropic
+Claude
+Bryntum
+
+================================================================================
+TRY IT OUT
+Add each URL as its own link. The license file is MIT.
+================================================================================
+
+https://github.com/harimau97/BriefPay
+https://meganesoftware.cc/briefpay/
+https://www.wordchain.win/briefpay/
+https://meganesoftware.cc/briefpay/demo/pass
+https://meganesoftware.cc/briefpay/demo/fail
+
+How a judge walks through it:
+
+1. Open https://meganesoftware.cc/briefpay/ and choose Start as client.
+2. Open Landing page redesign, USD 150, four criteria.
+3. Place the PayPal sandbox authorization. The order intent is AUTHORIZE. The job shows an authorization id and an empty capture id.
+4. Switch to Freelancer, accept the job, and submit https://meganesoftware.cc/briefpay/demo/pass
+5. Run AI review. The log names claude-haiku-5-5. Each criterion should pass, the server captures, and the status becomes Captured.
+6. For the fail path, authorize another job and submit https://meganesoftware.cc/briefpay/demo/fail
+7. Review fails with evidence. Capture is not called. The authorization remains.
+
+Demo logins have no password: client@demo.com and freelancer@demo.com.
+
+================================================================================
+IMAGE GALLERY
+JPG, PNG, or GIF. 5 MB maximum. 3:2 ratio. Up to 15 images.
+================================================================================
+
+Upload submission/briefpay-thumbnail.png
+It is a 3000x2000 PNG, 3:2, about 156 KB.
+The same file can be the project thumbnail.
+
+================================================================================
+DEMONSTRATION VIDEO
+YouTube only. Public or unlisted, no password. Judges watch at most 3 minutes.
+There is no video URL yet. Leave this field empty until the upload is done, then paste the YouTube link.
+Title, description, and the recording steps are in submission/youtube-video.txt.
+================================================================================
+
+Title:
+
+BriefPay: PayPal hold captured only after the brief passes
+
+Description:
+
+BriefPay places a freelance budget on a PayPal sandbox authorization hold. Claude Haiku checks the delivery URL against the brief. The server captures the hold only after every criterion passes. A failed review leaves the hold in place. This is not licensed escrow.
+
+Live demo: https://meganesoftware.cc/briefpay/
+
+Shot list, under 3 minutes. The open job is the Draft Landing page redesign, USD 200.00. Do not open the Captured or Voided job with the same title.
+
+1. The problem. A complete button does not show that the delivery matches the brief.
+2. As the client, approve the PayPal sandbox authorization. The badge is Authorized and the capture ID is empty.
+3. As the freelancer, submit the fail example and press Run AI review. The review fails and the hold stays.
+4. Submit the pass example and press Run AI review. The criteria pass and the status becomes Captured.
+5. Show the timeline: Created, Authorization hold, review, and Captured. Stop.
